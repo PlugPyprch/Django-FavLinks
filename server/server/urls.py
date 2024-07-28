@@ -1,6 +1,5 @@
 from django.urls import re_path
 from . import views
-from favlinks import views as fav_views
 from django.urls import path, include
 
 urlpatterns = [
