@@ -1,4 +1,5 @@
 import requests
+import json
 
 BASE_URL = "http://127.0.0.1:8000/api"
 
@@ -6,20 +7,24 @@ def register():
     print('--- Register ---')
     username = input('Username: ')
     password = input('Password: ')
+    confirm_password = input('Confirm Password: ')
     email = input('Email: ')
     
     data = {
         'username': username,
         'password': password,
+        'confirm_password': confirm_password,
         'email': email
     }
     
-    response = requests.post(f"{BASE_URL}/register/", data=data)
+    headers = {'Content-Type': 'application/json'}
+    response = requests.post(f"{BASE_URL}/signup", headers=headers, data=json.dumps(data))
     
-    if response.status_code == 201:
-        print('Registration successful')
-    else:
-        print('Registration failed:', response.json())
+    try:
+        error_message = response.json()
+    except requests.exceptions.JSONDecodeError:
+        error_message = response.text
+    print(error_message)
 
 def login():
     print('--- Login ---')
@@ -85,10 +90,13 @@ def list_favorite_urls(token):
     if response.status_code == 200:
         urls = response.json()
         for url in urls:
-            print(f"Title: {url['title']}, URL: {url['url']}, Is Valid: {url['is_valid']}")
-        print(urls)
+            category_name = url['category']['name'] if url['category'] else 'No category'
+            tag_names = ', '.join([tag['name'] for tag in url['tags']]) if url['tags'] else 'No tags'
+            print(f"Title: {url['title']}, URL: {url['url']}, Category: {category_name}, Tags: {tag_names}, Is Valid: {url['is_valid']}")
     else:
-        print('Failed to retrieve favorite URLs:', response.json())
+        print('Failed to retrieve favorite URLs:')
+        print('Status Code:', response.status_code)
+        print('Response Content:', response.content)
 
 def create_favorite_url(token):
     print('--- Create Favorite URL ---')
@@ -113,22 +121,26 @@ def create_favorite_url(token):
 
 def filter_by_category(token):
     category_id = input('Enter Category ID: ')
-    response = requests.get(f"{BASE_URL}/favorite_urls/?category_id={category_id}", headers={'Authorization': f'Token {token}'})
+    response = requests.get(f"{BASE_URL}/list_favlinks/?category_id={category_id}", headers={'Authorization': f'Token {token}'})
     if response.status_code == 200:
         urls = response.json()
         for url in urls:
-            print(f"Title: {url['title']}, URL: {url['url']}, Is Valid: {url['is_valid']}")
+            category_name = url['category']['name'] if url['category'] else 'No category'
+            tag_names = ', '.join([tag['name'] for tag in url['tags']]) if url['tags'] else 'No tags'
+            print(f"Title: {url['title']}, URL: {url['url']}, Category: {category_name}, Tags: {tag_names}, Is Valid: {url['is_valid']}")
     else:
         print('Failed to retrieve favorite URLs:', response.json())
 
 def filter_by_tags(token):
     tag_ids = input('Enter Tag IDs (comma separated): ').split(',')
     tag_params = '&'.join([f'tag_ids={tag_id}' for tag_id in tag_ids])
-    response = requests.get(f"{BASE_URL}/favorite_urls/?{tag_params}", headers={'Authorization': f'Token {token}'})
+    response = requests.get(f"{BASE_URL}/list_favlinks/?{tag_params}", headers={'Authorization': f'Token {token}'})
     if response.status_code == 200:
         urls = response.json()
         for url in urls:
-            print(f"Title: {url['title']}, URL: {url['url']}, Is Valid: {url['is_valid']}")
+            category_name = url['category']['name'] if url['category'] else 'No category'
+            tag_names = ', '.join([tag['name'] for tag in url['tags']]) if url['tags'] else 'No tags'
+            print(f"Title: {url['title']}, URL: {url['url']}, Category: {category_name}, Tags: {tag_names}, Is Valid: {url['is_valid']}")
     else:
         print('Failed to retrieve favorite URLs:', response.json())
 
