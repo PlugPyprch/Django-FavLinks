@@ -23,7 +23,7 @@ class FavoriteURL(models.Model):
     tags = models.ManyToManyField(Tag, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_valid = models.BooleanField(default=True)
+    is_valid = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
