@@ -2,8 +2,9 @@ POST http://127.0.0.1:8000/signup
 Content-Type: application/json
 
 {
-    "username" : "holy1",
-    "password" : "1234",
+    "username" : "plug1",
+    "password" : "1234Plsfjiefsf",
+    "confirm_password" : "1234Plsfjiefsf",
     "email" : "plug@gmail.com"
 }
 
@@ -14,13 +15,51 @@ POST http://127.0.0.1:8000/login
 Content-Type: application/json
 
 {
-    "username" : "holy1",
-    "password" : "1234"
+    "username" : "plug1",
+    "password" : "1234Plsfjiefsf"
 }
 
 ###
 GET http://127.0.0.1:8000/test_token
 Content-Type: application/json
-Authorization: Token 9d1182dd0c64207759d55811fd0d9230ca7a15f8
+Authorization: Token 69ef4153544f6387f92a563d632093a63545bdc1
 
 {}
+
+###
+
+POST http://127.0.0.1:8000/api/create_category/
+Content-Type: application/json
+Authorization: Token 69ef4153544f6387f92a563d632093a63545bdc1
+
+{
+    "name" : "cat2"
+}
+
+###
+GET http://127.0.0.1:8000/api/list_category/
+Content-Type: application/json
+Authorization: Token 69ef4153544f6387f92a563d632093a63545bdc1
+
+{}
+
+###
+POST http://127.0.0.1:8000/api/create_tag/
+Content-Type: application/json
+Authorization: Token 69ef4153544f6387f92a563d632093a63545bdc1
+
+{
+    "name" : "tag3"
+}
+
+###
+POST http://127.0.0.1:8000/api/create_favlink/
+Content-Type: application/json
+Authorization: Token 69ef4153544f6387f92a563d632093a63545bdc1
+
+{
+    "url": "http://example.com",
+    "title": "Example",
+    "category_id": 1,
+    "tag_ids": [1, 2]
+}
